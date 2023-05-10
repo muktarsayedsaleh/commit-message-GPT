@@ -72,6 +72,7 @@ def run(repo_path):
     diff = get_git_diff(repo_path)
     if diff:
         message = generate_commit_message(diff)
+        message = message.replace("\"", "")
         result = git_commit(repo_path, message)
         print(result)
     else:
