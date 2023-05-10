@@ -1,7 +1,11 @@
 """
 Git commit with automated commit message generation using OpenAI's GPT-3.
-All the rights reserved: Muktar SayedSaleh, 2023
+
+All the rights reserved:
+Muktar SayedSaleh @ 2023
 https://github.com/MukhtarSayedSaleh
+https://www.linkedin.com/in/mukhtarsayedsaleh
+
 """
 
 import subprocess
@@ -13,12 +17,16 @@ load_dotenv()
 
 
 def get_git_diff(repo_path):
-    command = ["git", "-C", repo_path, "diff", "--staged"]
+    """Get the git diff of the repo at the given path."""
+    command = [
+        "git", "-C", repo_path, "diff", "--staged"
+    ]
     result = subprocess.run(command, capture_output=True, text=True)
     return result.stdout
 
 
 def generate_commit_message(diff):
+    """Generate a commit message using OpenAI's GPT-3."""
     openai.api_key = os.getenv("OPENAI_API_KEY")
     model_id = os.getenv("OPENAI_MODEL_ID")
 
@@ -40,7 +48,6 @@ def generate_commit_message(diff):
     response = openai.ChatCompletion.create(
         model=model_id,
         messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": prompt},
         ],
     )
@@ -51,12 +58,17 @@ def generate_commit_message(diff):
 
 
 def git_commit(repo_path, message):
+    """Commit the changes to the repo at the given path."""
     command = ["git", "-C", repo_path, "commit", "-m", message]
     result = subprocess.run(command, capture_output=True, text=True)
     return result.stdout
 
 
 def run(repo_path):
+    """
+        Run the script.
+        TODO: make it a python package and add to pypi.
+    """
     diff = get_git_diff(repo_path)
     if diff:
         message = generate_commit_message(diff)
